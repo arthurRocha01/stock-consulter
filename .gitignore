@@ -2,3 +2,6 @@
 task/__pycache__
 build/
 dist/
+
+# Arquivos
+.*

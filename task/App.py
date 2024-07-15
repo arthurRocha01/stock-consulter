@@ -45,7 +45,7 @@ class StockConsulter(QWidget):
     customize = StockFrameCustomizer(self.table_result)
 
     customize.set_behavior()
-    customize.set_maximum_column_size([100, 100, 100, 150])
+    customize.set_maximum_column_size([110, 110, 200])
     customize.set_default_settings()
 
     # Definir fontes para cada coluna
@@ -104,7 +104,7 @@ class StockConsulter(QWidget):
       price_item.setFont(self.font_price)
       self.table_result.setItem(row, 1, price_item)
       # Margin
-      margin_item = QTableWidgetItem(str(details['margin']))
+      margin_item = QTableWidgetItem( str(f'{details["margin"]}%') )
       margin_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
       margin_item.setFlags(margin_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
       margin_item.setFont(self.font_margin)
