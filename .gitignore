@@ -1,2 +1,4 @@
+# Diretórios
 task/__pycache__
-test/
+build/
+dist/
