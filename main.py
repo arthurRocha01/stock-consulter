@@ -4,8 +4,8 @@ from task.App import StockConsulter
 
 def main():
   app = QApplication(sys.argv)
-  headers = ['Produto', 'Preço', 'Margem', 'Marca']
-  stock_consulter = StockConsulter()
+  headers = ['Nome', 'Preço', 'Custo', 'Margem', 'Marca']
+  stock_consulter = StockConsulter(headers)
   stock_consulter.show()
   sys.exit(app.exec())
 

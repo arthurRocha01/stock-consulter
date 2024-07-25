@@ -3,18 +3,32 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
   QWidget, QVBoxLayout, QLineEdit,
-  QTableWidget, QTableWidgetItem, QHeaderView
+  QTableWidget, QTableWidgetItem
 )
 from .Customize import StockFrameCustomizer
+from .SignalManager import SignalManager
+from .Utilities import Utilities
 
 
 class StockConsulter(QWidget):
-  def __init__(self):
+  def __init__(self, headers):
     super().__init__()
+    self.__initialize_handlers()
+    self.__initialize_ui(headers)
+
+
+  def __initialize_handlers(self):
+    """ Inicializa os handlers. """
+    self.handler_signal = SignalManager()
+    self.utilities = Utilities() 
+
+
+  def __initialize_ui(self, headers):
+    """ Cria a interface gráfica. """
     self.__create_window()
     self.__create_layout()
     self.__create_search_bar()
-    self.__create_result_table()
+    self.__create_result_table(headers)
     self.__initialize_result_table()
 
 
@@ -40,27 +54,30 @@ class StockConsulter(QWidget):
     self.main_layout.addWidget(self.search_bar)
 
 
-  def __customize_result_table(self):
-    """ Customização do quadro de estoque. """
-    customize = StockFrameCustomizer(self.table_result)
-
-    customize.set_behavior()
-    customize.set_maximum_column_size([110, 110, 200])
-    customize.set_default_settings()
-
-    # Definir fontes para cada coluna
+  def __create_font_settings(self):
+    """ Configura as fontes dos textos. """
     self.font_name = QFont('Arial', 13)
     self.font_price = QFont('Arial', 13, weight=QFont.Weight.Bold)
+    self.font_cost_price = QFont('Arial', 13, italic=True)
     self.font_margin = QFont('Arial', 13, italic=True)
     self.font_marca = QFont('Arial', 13)
 
 
-  def __create_result_table(self):
+  def __customize_result_table(self):
+    """ Customização do quadro de estoque. """
+    customize = StockFrameCustomizer(self.table_result)
+    customize.set_behavior()
+    customize.set_maximum_column_size([110, 110,  110, 200])
+    customize.set_default_settings()
+    self.__create_font_settings()
+
+
+  def __create_result_table(self, headers):
     """ Cria o quadro de estoque. """
     self.table_result = QTableWidget()
-    self.table_result.setColumnCount(4)
-    self.table_result.setHorizontalHeaderLabels(['Name', 'Price', 'Margin', 'Marca'])
-    # self.table_result.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+    self.table_result.setColumnCount(len(headers))
+    self.table_result.setHorizontalHeaderLabels(headers)
+    self.table_result.itemChanged.connect(self.__handle_cell_changed)
     self.main_layout.addWidget(self.table_result)
     self.__customize_result_table()
 
@@ -78,6 +95,11 @@ class StockConsulter(QWidget):
     self.update_table(sorted_products)
 
 
+  def __handle_cell_changed(self, item):
+    """ Tratamento para quando uma célula é alterada. """
+    self.handler_signal.handle_signal(self.table_result, item)
+
+
   def perform_search(self):
     """ Realizar a pesquisa e atualizar o quadro de estoque. """
     search_text = self.search_bar.text().lower()
@@ -90,28 +112,40 @@ class StockConsulter(QWidget):
 
   def update_table(self, products):
     """ Atualizar o quadro de estoque com os dados filtrados. """
+    self.table_result.blockSignals(True)
     self.table_result.setRowCount(len(products))
     for row, (name, details) in enumerate(products.items()):
-      # Name
-      name_item = QTableWidgetItem(name)
-      name_item.setFlags(name_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-      name_item.setFont(self.font_name)
-      self.table_result.setItem(row, 0, name_item)
-      # Price
-      price_item = QTableWidgetItem((str(details['price'])))
-      price_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-      price_item.setFlags(price_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-      price_item.setFont(self.font_price)
-      self.table_result.setItem(row, 1, price_item)
-      # Margin
-      margin_item = QTableWidgetItem( str(f'{details["margin"]}%') )
-      margin_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-      margin_item.setFlags(margin_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-      margin_item.setFont(self.font_margin)
-      self.table_result.setItem(row, 2, margin_item)
-      # Fabricator
-      marca_item = QTableWidgetItem(str(details['fabricator']))
-      marca_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-      marca_item.setFlags(marca_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-      marca_item.setFont(self.font_marca)
-      self.table_result.setItem(row, 3, marca_item)
+      self.__populate_row(row, name, details)
+    self.table_result.blockSignals(False)
+
+
+  def __populate_row(self, row, name, details):
+    """ Preencher uma linha do quadro de estoque. """
+    name = name
+    price = self.utilities.calculate_price(
+      details['price'], details['margin']
+    )
+    cost = details['price']
+    margin = self.utilities.customize_margin(details['margin'])
+    fabricator = details['fabricator']
+    # Nome
+    self.__add_table_item(row, 0, name, self.font_name)
+    # Preço
+    self.__add_table_item(row, 1, price, self.font_price)
+    # Custo
+    self.__add_table_item(row, 2, cost, self.font_cost_price)
+    # Margem
+    self.__add_table_item(row, 3, margin, self.font_margin, True)
+    # Marca
+    self.__add_table_item(row, 4, fabricator, self.font_marca)
+
+
+  def __add_table_item(self, row, column, value, font_key, editable=False):
+    """ Adicionar um item à célula do quadro de estoque. """
+    item = QTableWidgetItem(value)
+    if column != 0:
+      item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+    if not editable:
+      item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+    item.setFont(font_key)
+    self.table_result.setItem(row, column, item)

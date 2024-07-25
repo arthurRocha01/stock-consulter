@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import  QTableWidget, QHeaderView
+from PyQt6.QtWidgets import QHeaderView
+from PyQt6.QtGui import QFont
 
 class StockFrameCustomizer():
   def __init__(self, result_table):
@@ -26,4 +27,4 @@ class StockFrameCustomizer():
             }
         ''')
     self.header.setStyleSheet('font-size: 20px; font-weight: bold;')
-    self.result_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+    #self.result_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
