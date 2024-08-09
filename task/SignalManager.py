@@ -34,6 +34,11 @@ class SignalManager():
     self.database_manager.update_product(name, column, new_value)
 
 
+  def __button_add_handler(self, signal):
+    if signal:
+      print('Test')
+
+
   def __get_colunm_type(self, column):
     """ Obter o tipo de dado da coluna. """
     map_columns = {
@@ -73,7 +78,7 @@ class SignalManager():
       self.__handle_marca(item, name, column, new_value)
 
 
-  def handle_signal(self, table_result, item):
+  def cell_signal_handler(self, table_result, item):
     """ Tratar o sinal recebido. """
     row = item.row()
     column = item.column()
@@ -81,3 +86,7 @@ class SignalManager():
     new_value = item.text()
     signal = self.__get_colunm_type(column)
     self.__response_signal(item, table_result, signal, row, column, name, new_value)
+
+
+  def button_clicked_handler(self, signal):
+    self.__button_add_handler(signal)

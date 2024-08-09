@@ -2,8 +2,8 @@ import json
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
-  QWidget, QVBoxLayout, QLineEdit,
-  QTableWidget, QTableWidgetItem
+  QWidget, QVBoxLayout, QHBoxLayout, QLineEdit,
+  QTableWidget, QTableWidgetItem, QPushButton
 )
 from .Customize import StockFrameCustomizer
 from .SignalManager import SignalManager
@@ -20,14 +20,14 @@ class StockConsulter(QWidget):
   def __initialize_handlers(self):
     """ Inicializa os handlers. """
     self.handler_signal = SignalManager()
-    self.utilities = Utilities() 
+    self.utilities = Utilities()
 
 
   def __initialize_ui(self, headers):
     """ Cria a interface gráfica. """
     self.__create_window()
     self.__create_layout()
-    self.__create_search_bar()
+    self.__build_features()
     self.__create_result_table(headers)
     self.__initialize_result_table()
 
@@ -51,7 +51,21 @@ class StockConsulter(QWidget):
     self.search_bar.setPlaceholderText('Pesquise aqui...')
     self.search_bar.setFixedWidth(400)
     self.search_bar.textChanged.connect(self.perform_search)
-    self.main_layout.addWidget(self.search_bar)
+    self.features_layout.addWidget(self.search_bar)
+
+
+  def __create_button_add(self):
+    self.button_add = QPushButton('Adcionar +')
+    self.button_add.setFixedSize(100, 30)
+    self.button_add.clicked.connect(lambda: self.__button_clicked_handler(True))
+    self.features_layout.addWidget(self.button_add, )
+
+
+  def __build_features(self):
+    self.features_layout = QHBoxLayout()
+    self.main_layout.addLayout(self.features_layout)
+    self.__create_search_bar()
+    self.__create_button_add()
 
 
   def __create_font_settings(self):
@@ -97,7 +111,11 @@ class StockConsulter(QWidget):
 
   def __handle_cell_changed(self, item):
     """ Tratamento para quando uma célula é alterada. """
-    self.handler_signal.handle_signal(self.table_result, item)
+    self.handler_signal.cell_signal_handler(self.table_result, item)
+
+
+  def __button_clicked_handler(self, signal):
+    self.handler_signal.button_clicked_handler(signal)
 
 
   def perform_search(self):
