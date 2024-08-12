@@ -1,4 +1,3 @@
-import json
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -98,8 +97,7 @@ class StockConsulter(QWidget):
 
   def __load_data(self):
     """ Carregar os dados do arquivo JSON. """
-    with open('resources/database.json', 'r') as file:
-      self.data = json.load(file)
+    self.data = self.utilities.load_data('resources/database.json')
 
 
   def __initialize_result_table(self):

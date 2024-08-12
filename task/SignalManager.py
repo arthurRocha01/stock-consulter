@@ -1,11 +1,13 @@
 from.DatabaseManager import DatabaseManager
 from.Utilities import Utilities
+from .HandlerButton import HandlerButton
 
 
 class SignalManager():
   def __init__(self):
     self.database_manager = DatabaseManager()
     self.utilities = Utilities()
+    self.handler_button = HandlerButton()
 
 
   def __handle_name(self, item, name, column, new_value):
@@ -35,8 +37,7 @@ class SignalManager():
 
 
   def __button_add_handler(self, signal):
-    if signal:
-      print('Test')
+    self.handler_button.add_button_handler(signal)
 
 
   def __get_colunm_type(self, column):

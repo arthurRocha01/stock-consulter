@@ -1,4 +1,5 @@
 import re
+import json
 
 class Utilities():
   def clear_special_characters(self, string):
@@ -32,3 +33,8 @@ class Utilities():
       new_value = value.text()
       if not new_value.endswith('%'):
         value.setText(f'{new_value} %')
+
+
+  def load_data(self, file):
+    with open(file, 'r') as file:
+      return json.load(file)
