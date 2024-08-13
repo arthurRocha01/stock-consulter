@@ -28,3 +28,9 @@ class StockFrameCustomizer():
         ''')
     self.header.setStyleSheet('font-size: 20px; font-weight: bold;')
     #self.result_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+
+class RegisterCustomize():
+    def set_size_element(self, element, width, height):
+      element.setFixedWidth(width)
+      element.setFixedHeight(height)

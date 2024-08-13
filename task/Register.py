@@ -4,11 +4,13 @@ from PyQt6.QtWidgets import (
   QWidget, QVBoxLayout, QHBoxLayout, QLineEdit,
   QLabel, QPushButton
 )
+from .Customize import RegisterCustomize
 
 
 class Register(QWidget):
   def __init__(self):
     super().__init__()
+    self.customize_handler = RegisterCustomize()
     self.__create_window()
     self.__create_layout()
     self.__create_fields()
@@ -34,9 +36,9 @@ class Register(QWidget):
   def __create_field(self, field):
     layout = QHBoxLayout()
     label = QLabel(field, self)
-    self.__set_Font(label, 20)
+    self.__set_Font(label, 14)
     input = QLineEdit(self)
-    input.setFixedWidth(200)
+    self.customize_handler.set_size_element(input, 200, 35)
     layout.addWidget(label)
     layout.addWidget(input)
     self.main_layout.addLayout(layout)
