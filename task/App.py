@@ -4,9 +4,9 @@ from PyQt6.QtWidgets import (
   QWidget, QVBoxLayout, QHBoxLayout, QLineEdit,
   QTableWidget, QTableWidgetItem, QPushButton
 )
-from .Customize import StockFrameCustomizer
-from .SignalManager import SignalManager
-from .Utilities import Utilities
+from .custom.Customize import StockFrameCustomizer
+from .handler.SignalManager import SignalManager
+from .custom.Utilities import Utilities
 
 
 class StockConsulter(QWidget):
@@ -56,8 +56,8 @@ class StockConsulter(QWidget):
   def __create_button_add(self):
     self.button_add = QPushButton('Adcionar +')
     self.button_add.setFixedSize(100, 30)
-    self.button_add.clicked.connect(lambda: self.__button_clicked_handler(True))
-    self.features_layout.addWidget(self.button_add, )
+    self.button_add.clicked.connect(lambda: self.__button_clicked_handler('add'))
+    self.features_layout.addWidget(self.button_add)
 
 
   def __build_features(self):

@@ -1,5 +1,5 @@
-from.DatabaseManager import DatabaseManager
-from.Utilities import Utilities
+from .DatabaseManager import DatabaseManager
+from ..custom.Utilities import Utilities
 from .HandlerButton import HandlerButton
 
 
@@ -7,7 +7,7 @@ class SignalManager():
   def __init__(self):
     self.database_manager = DatabaseManager()
     self.utilities = Utilities()
-    self.handler_button = HandlerButton()
+    self.button_handler = HandlerButton()
 
 
   def __handle_name(self, item, name, column, new_value):
@@ -36,8 +36,12 @@ class SignalManager():
     self.database_manager.update_product(name, column, new_value)
 
 
-  def __button_add_handler(self, signal):
-    self.handler_button.add_button_handler(signal)
+  def __add_button_handler(self, signal):
+    self.button_handler.button_add(signal)
+
+
+  def __save_button_handler(self, signal):
+    self.button_handler.button_save(signal)
 
 
   def __get_colunm_type(self, column):
@@ -90,4 +94,7 @@ class SignalManager():
 
 
   def button_clicked_handler(self, signal):
-    self.__button_add_handler(signal)
+    if signal == 'add':
+      self.__add_button_handler(signal)
+    if signal == 'save':
+      self.__save_button_handler(signal)

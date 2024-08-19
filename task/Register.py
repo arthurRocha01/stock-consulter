@@ -4,13 +4,15 @@ from PyQt6.QtWidgets import (
   QWidget, QVBoxLayout, QHBoxLayout, QLineEdit,
   QLabel, QPushButton
 )
-from .Customize import RegisterCustomize
+from .custom.Customize import RegisterCustomize
 
 
 class Register(QWidget):
   def __init__(self):
     super().__init__()
     self.customize_handler = RegisterCustomize()
+    from .handler.SignalManager import SignalManager
+    self.handler_signal = SignalManager()
     self.__create_window()
     self.__create_layout()
     self.__create_fields()
@@ -51,6 +53,10 @@ class Register(QWidget):
       self.__create_field(field)
 
 
+  def __save_button_handler(self, signal):
+    self.handler_signal.button_clicked_handler(signal)
+
+
   def __create_button_save(self):
     layout = QHBoxLayout()
     self.button_save = QPushButton('Salvar')
@@ -58,3 +64,5 @@ class Register(QWidget):
     layout.addStretch()
     layout.addWidget(self.button_save, alignment=Qt.AlignmentFlag.AlignRight)
     self.main_layout.addLayout(layout)
+
+    self.button_save.clicked.connect(lambda: self.__save_button_handler('save'))

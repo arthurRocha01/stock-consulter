@@ -1,5 +1,5 @@
 import json
-from .Utilities import Utilities
+from ..custom.Utilities import Utilities
 
 
 class DatabaseManager():
