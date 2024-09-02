@@ -4,10 +4,11 @@ from .HandlerButton import HandlerButton
 
 
 class SignalManager():
-  def __init__(self):
+  def __init__(self, main_layout):
+    self.main_layout = main_layout
     self.database_manager = DatabaseManager()
     self.utilities = Utilities()
-    self.button_handler = HandlerButton()
+    self.button_handler = HandlerButton(self.main_layout)
 
 
   def __handle_name(self, item, name, column, new_value):

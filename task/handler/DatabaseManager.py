@@ -38,5 +38,11 @@ class DatabaseManager():
     if field not in ['name', 'marca']:
       new_value = self.utilities._clear_digits(new_value)
     self.data[product_name][field] = new_value
+    self.__save_data()
 
+
+  def add_product(self, values):
+    product_name = values['Name']
+    values.pop('Name')
+    self.data[product_name] = values
     self.__save_data()

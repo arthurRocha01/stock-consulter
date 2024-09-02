@@ -12,11 +12,11 @@ class Register(QWidget):
     super().__init__()
     self.customize_handler = RegisterCustomize()
     from .handler.SignalManager import SignalManager
-    self.handler_signal = SignalManager()
     self.__create_window()
     self.__create_layout()
     self.__create_fields()
     self.__create_button_save()
+    self.handler_signal = SignalManager(self.main_layout)
 
 
   def __create_window(self):

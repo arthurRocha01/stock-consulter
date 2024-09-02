@@ -14,11 +14,11 @@ class StockConsulter(QWidget):
     super().__init__()
     self.__initialize_handlers()
     self.__initialize_ui(headers)
+    self.handler_signal = SignalManager(self.main_layout)
 
 
   def __initialize_handlers(self):
     """ Inicializa os handlers. """
-    self.handler_signal = SignalManager()
     self.utilities = Utilities()
 
 
